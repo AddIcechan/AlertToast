@@ -21,8 +21,8 @@ public final class AlertToastManager: ObservableObject {
     }
     
     public init(show: Bool = false, alertToast: AlertToast = AlertToast(type: .regular, title: "")) {
-        self.show = show
         self.alertToast = alertToast
+        self.show = show
     }
     
 }
