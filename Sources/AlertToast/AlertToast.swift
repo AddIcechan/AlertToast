@@ -436,8 +436,10 @@ public struct AlertToastModifier: ViewModifier{
     private var screen: CGRect {
 #if os(iOS)
         return UIScreen.main.bounds
-#else
+#elseif os(macOS)
         return NSScreen.main?.frame ?? .zero
+#else
+        return UIScreen.main.bounds
 #endif
     }
     
@@ -469,18 +471,24 @@ public struct AlertToastModifier: ViewModifier{
             case .hud:
                 alert()
                     .overlay(
-                        GeometryReader{ geo -> AnyView in
-                            let rect = geo.frame(in: .global)
+                        
+                        GeometryReader(content: { proxy in
                             
-                            if rect.integral != alertRect.integral{
-                                
-                                DispatchQueue.main.async {
-                                    
-                                    self.alertRect = rect
-                                }
-                            }
-                            return AnyView(EmptyView())
-                        }
+                            AnyView(EmptyView())
+                                .task({
+                                    let rect = proxy.frame(in: .global)
+                                    if rect.integral != alertRect.integral {
+                                        DispatchQueue.main.async {
+                                            self.alertRect = rect
+                                        }
+                                    }
+                                })
+                            
+                        })
+                        
+//                        GeometryReader{ geo -> AnyView in
+//                            
+//                        }
                     )
                     .onTapGesture {
                         onTap?()
