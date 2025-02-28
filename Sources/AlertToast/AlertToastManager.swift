@@ -19,4 +19,10 @@ public final class AlertToastManager: ObservableObject {
             show.toggle()
         }
     }
+    
+    public init(show: Bool = false, alertToast: AlertToast = AlertToast(type: .regular, title: "")) {
+        self.show = show
+        self.alertToast = alertToast
+    }
+    
 }
